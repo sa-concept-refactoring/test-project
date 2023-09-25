@@ -1,3 +1,0 @@
-{
-    "clangd.path": "../llvm-project/llvm/cmake-build-release/bin/clangd"
-}
