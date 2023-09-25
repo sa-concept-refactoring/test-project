@@ -1,6 +1,6 @@
 {
-    "clangd.path": "../llvm-project/llvm/cmake-build-debug/bin/clangd",
+    "clangd.path": "../llvm-project/llvm/cmake-build-release/bin/clangd",
     "cmake.additionalKits": [
-        "../llvm-project/llvm/cmake-build-debug/bin/clang"
+        "../llvm-project/llvm/cmake-build-release/bin/clang"
     ]
 }
