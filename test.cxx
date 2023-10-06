@@ -15,8 +15,8 @@ concept Foo = requires(T a) {
 
 // 1. TRANSFORM THIS:
 
-template <std::integral T>
-void f(T) requires {}
+template <typename T>
+void f(T) requires std::integral<T> {}
 
 // INTO THIS:
 
