@@ -40,14 +40,18 @@ void bar(T a) requires Foo<T> {
 }
 
 // INTO THIS:
-// template<Foo T>
-// void bar(T a) {
-//   a.abc();
-// }
+// void f(std::integral<T> auto x) {}
 
 // ---
 
-// Example with multiple requires clauses => no conversion possible
+// 4. MULTIPLE REQUIRES CLAUSES ARE NOT SUPPORTED:
+template <typename T>
+void doubleCheck(T) requires std::integral<T> && std::floating_point<T>
+{}
+
+// ---
+
+// 5. Example with multiple requires clauses => no conversion possible
 template <typename T>
 requires std::integral<T> || std::floating_point<T>
 constexpr double Average(std::vector<T> const &vec){
