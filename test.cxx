@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 template<typename T>
 concept Foo = requires(T a) {
   { a.abc() } -> std::same_as<int>;
@@ -14,30 +13,41 @@ concept Foo = requires(T a) {
 // ---
 
 // 1. TRANSFORM THIS:
-
 template <typename T>
-void f(T) requires std::integral<T> {}
+void f(T) requires std::integral<T> 
+{}
 
 // INTO THIS:
-
-template <std::integral T>
-void fConverted(T) {}
+// template <std::integral T>
+// void f(T) {}
 
 // ---
 
+// 2. TRANSFORM THIS:
+template<typename T> 
+requires std::integral<T>
+void f(T) {}
+
+// INTO THIS:
+// void f(std::integral<T> auto x) {}
+
+// ---
+
+// 3. TRANSFORM THIS:
 template<typename T>
 void bar(T a) requires Foo<T> {
   a.abc();
 }
 
-template<Foo T>
-void baConverted(T a) {
-  a.abc();
-}
+// INTO THIS:
+// template<Foo T>
+// void bar(T a) {
+//   a.abc();
+// }
 
 // ---
 
-// Some test code
+// Example with multiple requires clauses => no conversion possible
 template <typename T>
 requires std::integral<T> || std::floating_point<T>
 constexpr double Average(std::vector<T> const &vec){
