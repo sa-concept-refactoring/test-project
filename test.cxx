@@ -10,54 +10,82 @@ concept Foo = requires(T a) {
   { a.abc() } -> std::same_as<int>;
 };
 
-// ---
+// *******************************************
+// * Standard case
+// *******************************************
 
-// 1. TRANSFORM THIS:
-template <typename T>
-void f(T) requires std::integral<T> 
+// BEFORE:
+template <typename  T> 
+void f() requires std::integral<T>
 {}
 
-// INTO THIS:
+
+
+// AFTER:
 // template <std::integral T>
 // void f(T) {}
 
-// ---
-
-// 2. TRANSFORM THIS:
-template<typename T> 
-requires std::integral<T>
-void f(T) {}
-
-// INTO THIS:
-// void f(std::integral<T> auto x) {}
-
-// ---
-
-// 3. TRANSFORM THIS:
+// BEFORE
 template<typename T>
 void bar(T a) requires Foo<T> {
   a.abc();
 }
 
-// INTO THIS:
+// AFTER
 // void f(std::integral<T> auto x) {}
 
-// ---
+// *******************************************
+// * Requires before function
+// *******************************************
 
-// 4. MULTIPLE REQUIRES CLAUSES ARE NOT SUPPORTED:
+// BEFORE
+template<typename T> 
+requires std::integral<T>
+void f(T) {}
+
+// AFTER
+// void f(std::integral<T> auto x) {}
+
+// *******************************************
+// * Example with template template parameter
+// *******************************************
+
+// BEFORE
+template <template <typename> class Foo, std::integral T> void f2() {}
+
+// *******************************************
+// * [NOT SUPPORTED] Multiple requires clauses
+// *******************************************
+
+// BEFORE
 template <typename T>
 void doubleCheck(T) requires std::integral<T> && std::floating_point<T>
 {}
 
-// ---
+// *******************************************
+// * [NOT SUPPORTED] Other cases
+// *******************************************
 
-// 5. Example with multiple requires clauses => no conversion possible
+// Non-Function Template
+template <typename T>
+concept FooB = requires(T x) {
+    {x} -> std::convertible_to<int>;
+};
+
+// Template Template parameters
+template <template <typename> class Container, typename T>
+concept ContainerWithAllocator = requires {
+    typename Container<T>;
+};
+
+// Example with multiple requires clauses => no conversion possible
 template <typename T>
 requires std::integral<T> || std::floating_point<T>
 constexpr double Average(std::vector<T> const &vec){
   const double sum = std::accumulate(vec.begin(), vec.end(), 0.0);
   return sum / vec.size();
 }
+
 
 int main() {
   int number;
