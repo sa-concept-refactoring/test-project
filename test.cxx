@@ -19,8 +19,6 @@ template <typename  T>
 void f() requires std::integral<T>
 {}
 
-
-
 // AFTER:
 // template <std::integral T>
 // void f(T) {}
@@ -51,7 +49,9 @@ void f(T) {}
 // *******************************************
 
 // BEFORE
-template <template <typename> class Foo, std::integral T> void f2() {}
+template <template <typename> class Foo, typename T>
+void f2() requires std::integral<T>
+{}
 
 // *******************************************
 // * [NOT SUPPORTED] Multiple requires clauses
@@ -85,7 +85,6 @@ constexpr double Average(std::vector<T> const &vec){
   const double sum = std::accumulate(vec.begin(), vec.end(), 0.0);
   return sum / vec.size();
 }
-
 
 int main() {
   int number;
