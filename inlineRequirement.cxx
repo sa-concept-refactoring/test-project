@@ -23,6 +23,8 @@ void f() requires std::integral<T>
 // template <std::integral T>
 // void f(T) {}
 
+// ******************************************
+
 // BEFORE
 template<typename T>
 void bar(T a) requires Foo<T> {
@@ -42,7 +44,8 @@ requires std::integral<T>
 void f(T) {}
 
 // AFTER
-// void f(std::integral<T> auto x) {}
+// template <std::integral T>
+// void f(T) {}
 
 // *******************************************
 // * Example with template template parameter
