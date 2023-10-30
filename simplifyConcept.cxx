@@ -1,8 +1,8 @@
+#include <concepts>
 #include <list>
 #include <vector>
 
 using namespace std;
-
 
 // *******************************************
 // * Standard case
@@ -18,34 +18,25 @@ auto foo2(auto param) {}
 // ******************************************
 
 // BEFORE
-template <std::integral Tpl>
-auto f(Tpl) -> void {}
+template <std::integral T>
+auto f(T param) -> void {}
 
 // AFTER
-auto foo4(auto Tpl) -> void {}
+auto foo4(std::integral auto param) -> void {}
 
 // *******************************************
 // * Aggregates
 // *******************************************
 
 // BEFORE
-template <typename...ArgTypes>
-auto fooVar(ArgTypes...parameters) -> void{}
+template <typename...T>
+auto fooVar(T...params) -> void{}
 
 // AFTER
-auto fooVarTerse(auto ...parameters) -> void{}
+auto fooVarTerse(auto ...params) -> void{}
 
 // *******************************************
-// * Type of type?
-// *******************************************
-
-// BEFORE
-template<std::integral T>
-auto foo5(T Tpl) -> void {}
-
-// AFTER
-auto foo6(std::integral auto T) -> void {}
-
+// * Pointer of a pointer
 // *******************************************
 
 // BEFORE
