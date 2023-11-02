@@ -1,6 +1,8 @@
 #include <concepts>
 #include <list>
 #include <vector>
+#include <iostream>
+#include <type_traits>
 
 using namespace std;
 
@@ -19,10 +21,42 @@ auto foo2(auto param) {}
 
 // BEFORE
 template <std::integral T>
-auto f(T param) -> void {}
+auto foo3(T param) -> void {}
 
 // AFTER
 auto foo4(std::integral auto param) -> void {}
+
+// *******************************************
+// * Multiple parameters
+// *******************************************
+
+// BEFORE
+template <typename T, typename U>
+auto foo5(T param, U param2) -> void {}
+
+// AFTER
+auto foo6(auto param, auto param2) -> void {}
+
+// ******************************************
+
+// BEFORE
+template <typename T, std::integral U>
+auto foo7(T param, U param2) -> void {}
+
+// AFTER
+auto foo8(auto param, auto param2) -> void {}
+
+// *******************************************
+// * Requires clause
+// *******************************************
+
+// BEFORE
+template <typename T>
+requires std::integral<T>
+auto foo9(T param) {}
+
+// AFTER
+auto foo10(auto param) {}
 
 // *******************************************
 // * Aggregates
@@ -41,20 +75,42 @@ auto fooVarTerse(auto ...params) -> void{}
 
 // BEFORE
 template<std::integral T>
-auto foo7(T const ** Tpl) -> void {}
+auto foo11(T const ** Tpl) -> void {}
 
 // AFTER
-auto foo8(std::integral auto const ** Values) -> void {}
+auto foo12(std::integral auto const ** Values) -> void {}
 
 // *******************************************
 // * [Not Possible] Collections
 // *******************************************
 
+// The keyword `auto` can't be used within containers
 template<typename T>
-auto foo9(vector<T> param) -> void {}
+auto foo40(vector<T> param) -> void {}
 
 template<typename T>
-auto foo10(list<T> param) -> void {}
+auto foo41(list<T> param) -> void {}
 
 template<class T, size_t N>
-auto foo11(T (&a)[N], int size) -> void {}
+auto foo42(T (&a)[N], int size) -> void {}
+
+// Using template declaration multiple times for function parameters
+template<std::integral T>
+auto foo43(T param, T anotherParam) -> void {}
+
+// Template type parameter is used within the function body
+template<std::integral T>
+auto foo13(T param) -> void {
+    if constexpr (std::is_unsigned_v<T>) {
+        std::cout << "The type is an unsigned integer." << std::endl;
+    } else {
+        std::cout << "The type is not an unsigned integer." << std::endl;
+    }
+}
+
+// Order in template definition different then the function parameters
+// destroys calling of the function
+// e.g.: foo14<string, int)(2, "hi");
+// when making both param auto the order of the types in `<>` changes!! 
+template <typename T, std::integral U>
+auto foo44(U param, T param2) -> void {}
