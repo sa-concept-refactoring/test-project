@@ -47,18 +47,6 @@ auto foo7(T param, U param2) -> void {}
 auto foo8(auto param, auto param2) -> void {}
 
 // *******************************************
-// * Requires clause
-// *******************************************
-
-// BEFORE
-template <typename T>
-requires std::integral<T>
-auto foo9(T param) {}
-
-// AFTER
-auto foo10(auto param) {}
-
-// *******************************************
 // * Aggregates
 // *******************************************
 
@@ -100,7 +88,7 @@ auto foo43(T param, T anotherParam) -> void {}
 
 // Template type parameter is used within the function body
 template<std::integral T>
-auto foo13(T param) -> void {
+auto foo44(T param) -> void {
     if constexpr (std::is_unsigned_v<T>) {
         std::cout << "The type is an unsigned integer." << std::endl;
     } else {
@@ -113,4 +101,12 @@ auto foo13(T param) -> void {
 // e.g.: foo14<string, int)(2, "hi");
 // when making both param auto the order of the types in `<>` changes!! 
 template <typename T, std::integral U>
-auto foo44(U param, T param2) -> void {}
+auto foo45(U param, T param2) -> void {}
+
+// Requires clause
+template <typename T>
+requires std::integral<T>
+auto foo46(T param) {}
+
+template <typename T>
+auto foo47(T param) requires std::integral<T> {}
