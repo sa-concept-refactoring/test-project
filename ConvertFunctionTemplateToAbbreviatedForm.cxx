@@ -27,24 +27,35 @@ auto foo3(T param) -> void {}
 auto foo4(std::integral auto param) -> void {}
 
 // *******************************************
+// * Templated concept as parameter
+// *******************************************
+
+// BEFORE
+template <std::convertible_to<int> T>
+auto foo5(T param) -> void {}
+
+// AFTER
+auto foo6(std::convertible_to<int> auto param) -> void {}
+
+// *******************************************
 // * Multiple parameters
 // *******************************************
 
 // BEFORE
 template <typename T, typename U>
-auto foo5(T param, U param2) -> void {}
+auto foo7(T param, U param2) -> void {}
 
 // AFTER
-auto foo6(auto param, auto param2) -> void {}
+auto foo8(auto param, auto param2) -> void {}
 
 // ******************************************
 
 // BEFORE
 template <typename T, std::integral U>
-auto foo7(T param, U param2) -> void {}
+auto foo9(T param, U param2) -> void {}
 
 // AFTER
-auto foo8(auto param, auto param2) -> void {}
+auto foo10(auto param, auto param2) -> void {}
 
 // *******************************************
 // * Aggregates
